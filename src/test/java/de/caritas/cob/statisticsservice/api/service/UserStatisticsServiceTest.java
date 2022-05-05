@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.caritas.cob.statisticsservice.api.service.securityheader.SecurityHeaderSupplier;
+import de.caritas.cob.statisticsservice.api.service.securityheader.TenantHeaderSupplier;
 import de.caritas.cob.statisticsservice.userstatisticsservice.generated.web.UserStatisticsControllerApi;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,21 +26,27 @@ public class UserStatisticsServiceTest {
   UserStatisticsControllerApi userStatisticsControllerApi;
   @Mock
   SecurityHeaderSupplier securityHeaderSupplier;
+  @Mock
+  TenantHeaderSupplier tenantHeaderSupplier;
 
   @Test
   public void retrieveSessionViaRcGroupId_Should_RetrieveSessionViaUserStatisticsControllerApi() {
 
-    when(securityHeaderSupplier.getCsrfHttpHeaders()).thenReturn(new HttpHeaders());
+    var headers = new HttpHeaders();
+    when(securityHeaderSupplier.getCsrfHttpHeaders()).thenReturn(headers);
     userStatisticsService.retrieveSessionViaRcGroupId(RC_GROUP_ID);
     verify(userStatisticsControllerApi, times(1)).getSession(null, RC_GROUP_ID);
+    verify(tenantHeaderSupplier).addTechnicalTenantHeaderIfMultitenancyEnabled(headers);
   }
 
   @Test
   public void retrieveSessionViaSessionId_Should_RetrieveSessionViaUserStatisticsControllerApi() {
 
-    when(securityHeaderSupplier.getCsrfHttpHeaders()).thenReturn(new HttpHeaders());
+    var headers = new HttpHeaders();
+    when(securityHeaderSupplier.getCsrfHttpHeaders()).thenReturn(headers);
     userStatisticsService.retrieveSessionViaSessionId(SESSION_ID);
     verify(userStatisticsControllerApi, times(1)).getSession(SESSION_ID, null);
+    verify(tenantHeaderSupplier, times(1)).addTechnicalTenantHeaderIfMultitenancyEnabled(headers);
   }
 
 }

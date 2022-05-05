@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.11.0](https://github.com/CaritasDeutschland/caritas-onlineBeratung-statisticsService/compare/v1.10.0...v1.11.0) (2022-04-15)
+
+
+### Features
+
+* upgrade keycloak to the latest version ([df2fb0c](https://github.com/CaritasDeutschland/caritas-onlineBeratung-statisticsService/commit/df2fb0c4588d15de1ce52ee9e8a07ba95121c42d))
+
+
+### Bug Fixes
+
+* update log4j to safe version ([440e4dd](https://github.com/CaritasDeutschland/caritas-onlineBeratung-statisticsService/commit/440e4dd6d9039baaf5e043b041ea54f3659ce492))
+
 ## 1.10.0 (2021-12-14)
 
 
