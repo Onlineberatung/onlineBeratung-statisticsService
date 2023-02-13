@@ -2,13 +2,18 @@ package de.caritas.cob.statisticsservice.api.statistics.listener;
 
 import de.caritas.cob.statisticsservice.api.model.StartVideoCallStatisticsEventMessage;
 import de.caritas.cob.statisticsservice.api.service.UserStatisticsService;
+import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEvent;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.StatisticsEventBuilder;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.StartVideoCallMetaData;
 import de.caritas.cob.statisticsservice.api.statistics.model.statisticsevent.meta.VideoCallStatus;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.bson.Document;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
@@ -46,7 +51,12 @@ public class StartVideoCallListener {
             .withMetaData(buildMetaData(eventMessage))
             .build();
 
-    mongoTemplate.insert(statisticsEvent);
+    var query = new Query(
+            Criteria.where("metaData.videoCallUuid").is(eventMessage.getVideoCallUuid())
+    );
+    var doc = new Document();
+    mongoTemplate.getConverter().write(statisticsEvent, doc);
+    mongoTemplate.upsert(query, Update.fromDocument(doc), StatisticsEvent.class);
   }
 
   private StartVideoCallMetaData buildMetaData(StartVideoCallStatisticsEventMessage eventMessage) {
